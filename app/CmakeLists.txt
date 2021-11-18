@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.4.1)
+
+include_directories(src/main/cpp)
+
+add_library(
+    NativeCode
+    SHARED
+    src/main/cpp/NativeCode.c
+)
