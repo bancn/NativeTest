@@ -59,4 +59,83 @@ include_directories(src/main/jni/)
        }
    ```
 
-   
+
+
+
+plantuml
+
+@startuml
+actor User
+
+User -> RunConfiguration : "Configure Debug"
+RunConfiguration -> RunConfigurationType : "Select Configuration Type"
+RunConfiguration -> RunState : "Define Run State"
+RunConfigurationType -> Runner : "Run Debugger"
+Runner -> DebugSession : "Start Debug Session"
+DebugSession -> DebugProcess : "Manage Debug Process"
+DebugProcess -> Debugger : "Trigger Debugger Actions"
+DebugProcess -> SteppingCommand : "Trigger Step Command"
+SteppingCommand -> SteppingHandler : "Handle Step Command"
+SteppingHandler -> StepInto : "Step Into"
+SteppingHandler -> StepOver : "Step Over"
+DebugSession -> ConsoleView : "Show Console Output"
+ConsoleView -> ConsoleRunner : "Display Debug Info"
+ConsoleRunner -> ConsoleOutput : "Show Output"
+DebugProcess -> DebugConsole : "Manage Console"
+DebugConsole -> ConsoleView : "Show Log"
+
+@enduml
+
+
+***********************************************************************
+
+@startuml
+package "Debugging" {
+  [DebugSession] --> [DebugProcess] : Manages
+  [DebugProcess] --> [Debugger] : Controls Execution
+  [DebugProcess] --> [ThreadManager] : Manages Threads
+  [ThreadManager] --> [Thread] : Lists Threads
+  [Thread] --> [StackTrace] : Tracks Execution
+  [Debugger] --> [ConsoleView] : Displays Output
+  [ConsoleView] --> [ConsoleRunner] : Runs Console
+  [ConsoleRunner] --> [ConsoleOutput] : Displays Debug Info
+}
+
+package "User Interface" {
+  [RunConfiguration] --> [RunState] : Configures Debug
+  [RunConfiguration] --> [Runner] : Starts Debug
+  [RunState] --> [Runner] : Manages State
+}
+
+@enduml
+
+
+**********************************************************************************
+
+@startuml
+actor User
+
+User -> RunConfiguration : "Configure Debug"
+RunConfiguration -> RunConfigurationType : "Select Configuration Type"
+RunConfiguration -> RunState : "Define Run State"
+RunConfigurationType -> Runner : "Run Debugger"
+Runner -> DebugSession : "Start Debug Session"
+DebugSession -> DebugProcess : "Manage Debug Process"
+DebugProcess -> Debugger : "Trigger Debugger Actions"
+DebugProcess -> ThreadManager : "Manage Threads"
+ThreadManager -> Thread : "List Threads"
+Thread -> StackTrace : "Get Stack Trace"
+StackTrace -> StackFrame : "Get Stack Frame"
+Thread -> DebugCommand : "Trigger Debug Command"
+DebugCommand -> SteppingHandler : "Handle Debug Command"
+SteppingHandler -> StackTrace : "Update Stack Trace"
+SteppingHandler -> ThreadManager : "Switch Threads"
+DebugSession -> ConsoleView : "Show Console Output"
+ConsoleView -> ConsoleRunner : "Display Debug Info"
+ConsoleRunner -> ConsoleOutput : "Show Output"
+DebugProcess -> DebugConsole : "Manage Console"
+DebugConsole -> ConsoleView : "Show Log"
+
+@enduml
+
+
