@@ -139,3 +139,55 @@ DebugConsole -> ConsoleView : "Show Log"
 @enduml
 
 
+
+是的，**`RunConfiguration`** 和 **`DebugSession`** 应该是关联的。`RunConfiguration` 定义了调试会话的配置参数，而 **`DebugSession`** 则是实际执行调试的会话实例。二者之间的关联可以理解为：
+
+- **`RunConfiguration`** 包含了调试所需的配置信息（例如，选择的调试目标、调试模式、程序参数等）。
+- **`DebugSession`** 负责管理调试会话的生命周期，并根据 `RunConfiguration` 中的设置来启动和管理调试过程。
+
+### 需要关联的原因：
+1. **调试配置驱动调试会话**：当你点击 **Run** 或 **Debug** 按钮时，IDE 会根据你选择的 **`RunConfiguration`** 来启动相应的调试会话。`RunConfiguration` 作为调试的配置源，它提供了必要的信息（比如目标 APK、调试参数等），而 `DebugSession` 则根据这些配置开始实际的调试工作。
+
+2. **从配置到会话的过渡**：`RunConfiguration` 定义了调试的基本配置，而 **`DebugSession`** 则是基于这些配置启动调试进程，并控制整个调试过程。二者的关系是配置（`RunConfiguration`）驱动会话（`DebugSession`）的行为。
+
+### 组件图中如何表达这个关联？
+
+在组件图中，**`RunConfiguration`** 和 **`DebugSession`** 之间可以有一个依赖关系或者调用关系，表示 `DebugSession` 会基于 `RunConfiguration` 启动调试会话。
+
+### 调整后的组件图
+
+```plantuml
+@startuml
+package "Debugging" {
+  [DebugSession] --> [DebugProcess] : Manages
+  [DebugProcess] --> [Debugger] : Controls Execution
+  [DebugProcess] --> [ThreadManager] : Manages Threads
+  [ThreadManager] --> [Thread] : Lists Threads
+  [Thread] --> [StackTrace] : Tracks Execution
+  [StackTrace] --> [StackFrame] : Shows Stack Frames
+  [Debugger] --> [ConsoleView] : Displays Output
+  [ConsoleView] --> [ConsoleRunner] : Runs Console
+  [ConsoleRunner] --> [ConsoleOutput] : Displays Debug Info
+  [DebugSession] --> [DebugCommand] : Executes Commands
+}
+
+package "Configuration" {
+  [RunConfiguration] --> [RunState] : Configures Debug
+  [RunConfiguration] --> [DebugSession] : Starts Debug Session
+  [RunConfiguration] --> [RunConfigurationType] : Defines Configuration
+  [RunConfigurationType] --> [Runner] : Initializes Debug Runner
+  [RunState] --> [RunConfigurationType] : Defines Run Configuration
+}
+
+@enduml
+```
+
+### 主要调整：
+- **`RunConfiguration`** 和 **`DebugSession`** 之间增加了一个关联关系 (`Starts Debug Session`)，表示 `RunConfiguration` 是启动调试会话所需要的配置来源。
+  
+### 解释：
+- **`RunConfiguration`** 提供了调试所需的配置和环境信息，调试会话（**`DebugSession`**）则根据这些配置来启动和管理调试过程。
+- 在 `RunConfiguration` 被加载并激活时，它触发 **`DebugSession`** 的创建，后者将基于配置启动相应的调试进程。
+
+### 结论：
+`RunConfiguration` 和 `DebugSession` 之间的关联是必要的，因为调试会话的启动和管理是基于配置的。你应该在组件图中明确表示这一点，通过关联关系展示二者的联系。
