@@ -20,3 +20,6 @@ private:
 public:
 	void AddLog(const CString& logText);
 };
+
+
+m_myEdit.SubclassDlgItem(IDC_EDIT_CUSTOM, this);
