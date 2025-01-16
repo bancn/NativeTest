@@ -2,7 +2,6 @@
 //
 
 #include "pch.h"
-#include "HdaLauncher.h"
 #include "CMyEdit.h"
 
 #define ID_MENU_CLEAR_LOG 1001  // 清空日志菜单项 ID
